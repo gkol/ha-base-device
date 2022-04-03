@@ -58,7 +58,7 @@ class BaseDevice(ABC):
             for device_property in self.device_properties:
                 ha_messages = device_property.generate_messages(False, None)
                 if ha_messages:
-                    self.send_messages(ha_messages)
+                    self.process_ha_messages(ha_messages)
 
     def is_my_message(self, message):
         return self.input_topic.split('#')[0] in message.topic
