@@ -41,10 +41,8 @@ class ValueTypes(Enum):
 
 
 class BaseDevice(ABC):
-    def __init__(self, sensor_id: str, device_id: str, input_topic: str, manufacturer: str, model: str,
-                 name: str, ha_topic_name: str):
+    def __init__(self, sensor_id: str, device_id: str, manufacturer: str, model: str, name: str, ha_topic_name: str):
         self.device_id = device_id
-        self.input_topic = input_topic
         self.manufacturer = manufacturer
         self.model = model
         self.name = name
@@ -59,6 +57,25 @@ class BaseDevice(ABC):
                 ha_messages = device_property.generate_messages(False, None)
                 if ha_messages:
                     self.process_ha_messages(ha_messages)
+
+    def process_ha_messages(self, ha_messages):
+        pass
+
+    def payload_online_check(self, payload):
+        return True
+
+class BaseMQTTDevice(BaseDevice):
+    def __init__(self, sensor_id: str, device_id: str, input_topic: str, manufacturer: str, model: str,
+                 name: str, ha_topic_name: str):
+        super().__init__(
+            sensor_id,
+            device_id,
+            manufacturer,
+            model,
+            name,
+            ha_topic_name
+        )
+        self.input_topic = input_topic
 
     def is_my_message(self, message):
         return self.input_topic.split('#')[0] in message.topic
@@ -86,13 +103,6 @@ class BaseDevice(ABC):
             self.process_ha_messages(ha_messages)
 
         self.last_message_time = datetime.now()
-
-    def process_ha_messages(self, ha_messages):
-        pass
-
-    def payload_online_check(self, payload):
-        return True
-
 
 class DeviceProperty:
     def __init__(self, base_device: BaseDevice, ha_name: str, topic_property_name: str, value_type: ValueTypes,
