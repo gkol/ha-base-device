@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='ha-base-device',
-    version='0.0.2',
+    version='0.0.3',
     packages=['hadevice'],
     url='https://github.com/gkol/ha-base-device',
     license='MIT',
