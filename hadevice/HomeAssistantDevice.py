@@ -84,17 +84,15 @@ class BaseDevice(ABC):
                 ha_messages = device_property.generate_messages(False, None)
 
         if ha_messages:
-            self.send_messages(ha_messages)
+            self.process_ha_messages(ha_messages)
 
         self.last_message_time = datetime.now()
 
+    def process_ha_messages(self, ha_messages):
+        pass
+
     def payload_online_check(self, payload):
         return True
-
-    def send_messages(self, ha_messages):
-        for pub in ha_messages:
-            #print("topic[{}] data[{}]".format(pub['topic'], pub['payload']))
-            self.mqtt_client.publish(pub['topic'], pub['payload'])
 
 
 class DeviceProperty:
