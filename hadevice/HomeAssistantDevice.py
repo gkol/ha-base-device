@@ -41,9 +41,8 @@ class ValueTypes(Enum):
 
 
 class BaseDevice(ABC):
-    def __init__(self, mqtt_client, sensor_id: str, device_id: str, input_topic: str, manufacturer: str, model: str,
+    def __init__(self, sensor_id: str, device_id: str, input_topic: str, manufacturer: str, model: str,
                  name: str, ha_topic_name: str):
-        self.mqtt_client = mqtt_client
         self.device_id = device_id
         self.input_topic = input_topic
         self.manufacturer = manufacturer
