@@ -37,7 +37,7 @@ class DeviceProperty:
 
         self.ha_config = {
             "availability_topic": entity_type.availability_topic.format(base_device.ha_topic_name, ha_name),
-            # "json_attributes_topic": json_attributes_topic.format(base_device.ha_topic_name, self.name),
+            "json_attributes_topic": entity_type.json_attributes_topic.format(base_device.ha_topic_name, ha_name),
             "state_topic": entity_type.state_topic.format(base_device.ha_topic_name, ha_name),
             "unique_id": "{}_{}".format(base_device.ha_topic_name, ha_name),
             "name": ha_name,
@@ -57,7 +57,7 @@ class DeviceProperty:
         if sensor_type.unit_of_measurement:
             self.ha_config['unit_of_measurement'] = sensor_type.unit_of_measurement
 
-    def generate_messages(self, is_online, payload):
+    def generate_messages(self, is_online, state_payload, attributes_payload=None):
         ha_messages = []
 
         ha_messages += [
@@ -65,8 +65,13 @@ class DeviceProperty:
             {'topic': self.ha_config['availability_topic'], 'payload': "online" if is_online else "offline"}
         ]
 
-        if is_online:
-            ha_messages.append({'topic': self.ha_config['state_topic'], 'payload': payload})
+        if not is_online:
+            return
+
+        ha_messages.append({'topic': self.ha_config['state_topic'], 'payload': state_payload})
+
+        if attributes_payload:
+            ha_messages.append({'topic': self.ha_config['json_attributes_topic'], 'payload': attributes_payload})
 
         return ha_messages
 
